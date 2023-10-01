@@ -13,7 +13,7 @@ body {
 }
 
 header {
-  background-color: #f5ba13;
+  background-color: hwb(121 8% 27%);
   margin: auto -16px;
   padding: 16px 32px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
@@ -34,7 +34,7 @@ footer {
 }
 
 footer p {
-  color: #ccc;
+  color: rgb(154, 183, 154);
 }
 .note {
   background: #fff;
@@ -44,28 +44,43 @@ footer p {
   width: 240px;
   margin: 16px;
   float: left;
+  position: relative;
+  border: 1px solid #ccc;
+}
+.note .edit-button {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
 }
 .note h1 {
   font-size: 1.1em;
   margin-bottom: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .note p {
   font-size: 1.1em;
   margin-bottom: 10px;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .note button {
   position: relative;
   float: right;
   margin-right: 10px;
-  color: #f5ba13;
+  color: hwb(121 8% 27%);;
   border: none;
   width: 36px;
   height: 36px;
   cursor: pointer;
   outline: none;
+}
+
+.note button:hover {
+  background-color: rgb(154, 183, 154);
 }
 
 form.create-note {
@@ -91,7 +106,7 @@ form.create-note button {
   position: absolute;
   right: 18px;
   bottom: -18px;
-  background: #f5ba13;
+  background: hwb(121 8% 27%);
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -101,3 +116,54 @@ form.create-note button {
   cursor: pointer;
   outline: none;
 }
+
+div.logout {
+  position: relative;
+  float: right;
+  border: none;
+  width: 36px;
+  color: hwb(121 8% 27%);
+  height: 36px;
+  cursor: pointer;
+  outline: none;
+}
+
+div.mycontainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 600px;
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between; /* Adjust this based on your spacing preferences */
+}
+
+div.mycontainer p {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+
+
+button.mb {
+  width: 40%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #14ba17;
+  color: white;
+  cursor: pointer;
+}
+
+button.mb:hover {
+  background-color: rgb(154, 183, 154);
+}
+

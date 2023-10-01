@@ -1,9 +1,11 @@
 import React from "react";
+import Logout from "./Logout";
 
-function Header() {
+function Header(props) {
   return (
     <header>
-      <h1>Keeper</h1>
+          {props.show && <Logout />}
+      <h1>{props.name}</h1>
     </header>
   );
 }
