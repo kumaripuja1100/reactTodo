@@ -5,6 +5,7 @@ import Zoom from "@material-ui/core/Zoom";
 import axios from 'axios';
 
 function CreateArea(props) {
+
   const [note, setNote] = useState({
     heading: "",
     content: "",
@@ -28,13 +29,13 @@ function CreateArea(props) {
   const postNoteRequest = async () => {
 
     try {
+      const userIds = localStorage.getItem('userId');
       const response = await axios.post('https://mytodolist-rlgg.onrender.com/api/todo/add_ToDo', 
-      { heading: note.heading, content : note.content, style: "", color : "" });
+      { heading: note.heading, content : note.content, style: "", color : "", userId : userIds });
       console.log(response);
 
-      const data = response.data;
-
-      props.onAdd({heading: note.heading, content : note.content, id : data});
+     const data = response.data;
+    props.onAdd({heading: note.heading, content : note.content, id : data});
 
     } catch (error) {
       console.error('Error posting data:', error);
