@@ -81,7 +81,7 @@ function Home() {
       setName("Hi " + data.firstName);
 
     }catch(error) {
-      alert(error);
+      console.log(error.message);
     }
   }
 
