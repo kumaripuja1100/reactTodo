@@ -4,6 +4,8 @@ import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 import axios from 'axios';
+import { collection, deleteDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { db } from './Firebase';
 
 function Home() {
   const [notes, setNotes] = useState([]);
@@ -17,20 +19,56 @@ function Home() {
 
   const deleteRequest = async (backendId) => {
 
-    try {
-      await axios.delete(`https://mytodolist-rlgg.onrender.com/api/todo/delete_ToDo/${backendId}`);
-
-    } catch (error) {
-      console.error('Error deleting data:', error);
+    if (localStorage.getItem('useFireBaseApis') === 'true')
+    {
+      try
+      {
+        const docRef = await doc(db, 'TodoList', backendId);  
+        await deleteDoc(docRef);
+      }
+      catch(error)
+      {
+        console.log('Error deleting data:', error.message);
+      }
+    }
+    else
+    {
+      try {
+        await axios.delete(`https://mytodolist-rlgg.onrender.com/api/todo/delete_ToDo/${backendId}`);
+  
+      } catch (error) {
+        console.error('Error deleting data:', error);
+      }
     }
   };
 
   const updateRequest = async(backendId,updatedHeading, updatedContent) => {
-    try {
-      await axios.put(`https://mytodolist-rlgg.onrender.com/api/todo/update_ToDo/${backendId}`,
-      {heading: updatedHeading, content : updatedContent, style: "", color : ""});
-    }catch(error) {
-      console.log('Error posting data:', error.message);
+
+    if (localStorage.getItem('useFireBaseApis') === 'true')
+    {
+      try
+      {
+        const docRef = await doc(db, 'TodoList', backendId);
+        const newData = {
+          content : updatedContent,
+          heading : updatedHeading
+        }
+  
+        await updateDoc(docRef, newData);
+      }
+      catch(error)
+      {
+        console.log('Error posting data:', error.message);
+      }
+    }
+    else
+    {
+      try {
+        await axios.put(`https://mytodolist-rlgg.onrender.com/api/todo/update_ToDo/${backendId}`,
+        {heading: updatedHeading, content : updatedContent, style: "", color : ""});
+      }catch(error) {
+        console.log('Error posting data:', error.message);
+      }
     }
   }
 
@@ -85,10 +123,40 @@ function Home() {
     }
   }
 
+  const getFirebaseRequest = async () => {
+
+    try {
+      const userId = localStorage.getItem('userId');
+
+      const q = query(collection(db, "TodoList"), where("userId", "==", userId));
+
+      const dataArray = [];
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        dataArray.push({ id: doc.id, heading : doc.data().heading, content : doc.data().content });
+      });
+
+      setNotes(prevNotes => {
+        return [...prevNotes, ...dataArray]
+      });
+
+    } catch (error) {
+      console.log('Error posting data:', error.message);
+    }
+  };
+
   useEffect(() => {
     // Fetch data when the component mounts
-    getRequest(); 
-    getUserName();
+    if (localStorage.getItem('useFireBaseApis') === 'true')
+    {
+      getFirebaseRequest();
+    }
+    else
+    {
+      getRequest(); 
+      getUserName();
+    }
+
   }, []);
 
   return (
