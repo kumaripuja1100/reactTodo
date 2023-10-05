@@ -9,6 +9,8 @@ import axios from 'axios';
 import Header from './Header';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from './Firebase';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -55,6 +57,18 @@ const Register = () => {
       setmessageToShow(error.message);
     }
   }
+  const registerFirebaseUser = async(userId) => {
+    try{
+      await addDoc(collection(db, 'TodoListUser'), {
+        firstName : firstName,
+        lastName : lastName,
+        userId: userId
+      });
+    }catch(error){
+      setshowError(true);
+      setmessageToShow(error.message);
+    }
+};
   const emailHandler = (e) => {
     setEmail(e.target.value);
     setEmailInvalidError('');
@@ -97,7 +111,13 @@ const Register = () => {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        PostRegisteredUserRequest(userCredential.user.uid);
+      if (localStorage.getItem('useFireBaseApis') === 'true'){
+        await registerFirebaseUser(userCredential.user.uid);
+      }
+      else{
+       await PostRegisteredUserRequest(userCredential.user.uid);
+      }
+        
         setmessageToShow('Created User successfully! \n Redirecting to login');
         await delay(5000);
         navigate('/login');
