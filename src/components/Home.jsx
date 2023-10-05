@@ -23,7 +23,7 @@ function Home() {
     {
       try
       {
-        const docRef = await doc(db, 'TodoList', backendId);  
+        const docRef = doc(db, 'TodoList', backendId);  
         await deleteDoc(docRef);
       }
       catch(error)
@@ -48,7 +48,7 @@ function Home() {
     {
       try
       {
-        const docRef = await doc(db, 'TodoList', backendId);
+        const docRef = doc(db, 'TodoList', backendId);
         const newData = {
           content : updatedContent,
           heading : updatedHeading
@@ -122,7 +122,21 @@ function Home() {
       console.log(error.message);
     }
   }
-
+const getFirebaseUserName = async() => {
+  try{
+    const userId = localStorage.getItem('userId');
+    const q = query(collection(db, "TodoListUser"), where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+    var firstname;
+    querySnapshot.forEach((doc) => {
+      firstname = doc.data().firstName;
+    });
+    setName("Hi " + firstname); 
+  }catch(error){
+    console.log(error.message);
+  }
+ 
+}
   const getFirebaseRequest = async () => {
 
     try {
@@ -150,6 +164,7 @@ function Home() {
     if (localStorage.getItem('useFireBaseApis') === 'true')
     {
       getFirebaseRequest();
+      getFirebaseUserName();
     }
     else
     {
