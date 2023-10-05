@@ -6,6 +6,21 @@ import PR from './ProtectedRoute';
 
 const App = () => {
 
+  localStorage.setItem('useFireBaseApis', 'true');
+
+  try
+  {
+    const firebaseConfig = JSON.parse(process.env.REACT_APP_USE_FIREBASE_API);
+
+    if (firebaseConfig === 'false')
+    {
+        localStorage.setItem('useFireBaseApis', 'false');
+    }
+  }
+  catch(error)
+  {
+  }
+
   return (
     <Router>
       <Routes>

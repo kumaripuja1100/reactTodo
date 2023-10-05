@@ -3,6 +3,8 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Fab from "@material-ui/core/Fab";
 import Zoom from "@material-ui/core/Zoom";
 import axios from 'axios';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from './Firebase';
 
 function CreateArea(props) {
 
@@ -28,25 +30,58 @@ function CreateArea(props) {
 
   const postNoteRequest = async () => {
 
+    var id = 0;
     try {
       const userIds = localStorage.getItem('userId');
       const response = await axios.post('https://mytodolist-rlgg.onrender.com/api/todo/add_ToDo', 
       { heading: note.heading, content : note.content, style: "", color : "", userId : userIds });
       console.log(response);
 
-     const data = response.data;
-    props.onAdd({heading: note.heading, content : note.content, id : data});
+      id = response.data;
 
     } catch (error) {
       console.error('Error posting data:', error);
     }
+
+    props.onAdd({heading: note.heading, content : note.content, id : id});
+
   };
+
+  const postFirebaseNoteRequest = async () => {
+
+    var id = 0;
+    try
+    {
+      const docRef = await addDoc(collection(db, 'TodoList'), {
+        color : '',
+        content : note.content,
+        heading : note.heading,
+        style : '',
+        userId : localStorage.getItem('userId')
+      });
+
+      id = docRef.id;
+    }
+    catch(error)
+    {
+      console.error('Error posting data:', error);
+    }
+    props.onAdd({heading: note.heading, content : note.content, id : id});
+  };
+
 
   const submitNote = async(event) => {
 
     event.preventDefault();
 
-    await postNoteRequest();
+    if (localStorage.getItem('useFireBaseApis') === 'true')
+    {
+      await postFirebaseNoteRequest();
+    }
+    else
+    {
+      await postNoteRequest();
+    }
 
     setNote({
       heading: "",
